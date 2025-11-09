@@ -140,12 +140,6 @@ Examples:
       })
     })
 
-    // Explicitly handle OPTIONS preflight requests for /mcp (CORS middleware should handle this, but being explicit)
-    app.options('/mcp', (req, res) => {
-      // CORS middleware will add the headers, we just need to send 204
-      res.status(204).end()
-    })
-
     // Apply authentication to all /mcp routes
     app.use('/mcp', authenticateToken)
 
