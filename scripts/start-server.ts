@@ -238,6 +238,7 @@ Examples:
       console.log(`Endpoint: http://0.0.0.0:${port}/mcp`)
       console.log(`Health check: http://0.0.0.0:${port}/health`)
       console.log(`Authentication: Bearer token required`)
+      console.log(`CORS enabled`)
       if (options.authToken) {
         console.log(`Using provided auth token`)
       }
