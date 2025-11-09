@@ -77,22 +77,7 @@ Examples:
     const app = express()
     app.use(express.json())
 
-    const corsOptions: cors.CorsOptions = {
-      origin: "*",
-      methods: ["GET", "POST", "DELETE", "OPTIONS"],
-      allowedHeaders: [
-        "Content-Type",
-        "Authorization",
-        "mcp-session-id",
-        "X-Requested-With",
-      ],
-    };
-
-    // Apply CORS to all routes
-    app.use(cors(corsOptions));
-
-    // Handle preflight for /mcp *before* auth middleware
-    app.options("/mcp", cors(corsOptions));
+    app.use(cors({ maxAge: 24 * 60 * 60, origin: true }))
 
     // Generate or use provided auth token (from CLI arg or env var)
     const authToken = options.authToken || process.env.AUTH_TOKEN || randomBytes(32).toString('hex')
