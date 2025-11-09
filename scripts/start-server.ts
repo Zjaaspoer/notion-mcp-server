@@ -5,7 +5,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js'
 import { randomUUID, randomBytes } from 'node:crypto'
 import express from 'express'
-import cors from "cors"
+import cors from 'cors'
 
 import { initProxy, ValidationError } from '../src/init-server'
 
@@ -77,7 +77,14 @@ Examples:
     const app = express()
     app.use(express.json())
 
-    app.use(cors({ maxAge: 24 * 60 * 60, origin: true }))
+    app.use(cors({ 
+      maxAge: 24 * 60 * 60, 
+      origin: true,
+      credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization', 'mcp-session-id'],
+      exposedHeaders: ['mcp-session-id'],
+      methods: ['GET', 'POST', 'DELETE', 'OPTIONS']
+    }))
 
     // Generate or use provided auth token (from CLI arg or env var)
     const authToken = options.authToken || process.env.AUTH_TOKEN || randomBytes(32).toString('hex')
@@ -88,6 +95,11 @@ Examples:
 
     // Authorization middleware
     const authenticateToken = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
+      // Skip authentication for OPTIONS preflight requests (CORS)
+      if (req.method === 'OPTIONS') {
+        return next()
+      }
+
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1] // Bearer TOKEN
 
